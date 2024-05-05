@@ -1,7 +1,5 @@
 import express from "express";
-import productManager from "./data/managers/productManager.js;
-import router from "./data/fs/routes/products.routes.js";
-import router from "./data/fs/routes/carts.routes.js";
+import router from "./routes/index.js";
 
 const app = express();
 

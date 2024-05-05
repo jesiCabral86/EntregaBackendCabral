@@ -1,7 +1,7 @@
 import fs from "fs";
 
 let carts = [];
-const pathFile = "./carts.json"
+const pathFile = "./src/carts.json"
 
 const getCarts = async () => {
     const cartsJson = await fs.promises.readFile(pathFile);
@@ -33,12 +33,28 @@ const createCart = async () => {
             
             if(!cart) return `No se encuentra el carrito con el id ${cid}`
 
-            return carts.products;
+            return cart.products;
 
         };
+
+        const addProductToCart = async (cid, pid) => {
+            await getProducts();
+            
+            const index = carts.findIndex( c => c.id === cid);
+            if(index === -1) return "No se encontro el carrito con el id ${cid}";
+            
+            carts[index].products.push({
+                product : pid,
+                quantity: 1
+            });
+
+            return carts[index]
+
+           }
     
         export default {
         getCarts,
         createCart,
-        getCartById
+        getCartById,
+        addProductToCart
     }

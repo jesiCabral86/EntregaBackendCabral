@@ -1,8 +1,28 @@
+app.get("/products", read)
+app.get("/products/:pid", readOne)
+
+async function readOne(req, res){
+    try{
+      const { category } = req.query
+      const all = await read(category);
+      if (all.length > 0){
+      return res.json({status: 200, response: all, category}) 
+      }else{
+        return res.json ({status: 404, response: "Not found"})
+      }
+    }catch(error){
+     console.log(error);
+     return res.json({status: 500, response: error.message})
+    }
+}
+
+----------------------------------------------------------------------------------------------------------
+
 import fs from "fs";
 
 //creamos el constructor con el array vacio.
 let products = [];
-let pathFile = "./src/products.json";
+let pathFile = "./data/fs/products.json";
 
 //creamos metodo addProducts para agregar productos al arreglo inicial
 const addProduct = async (product) => {
@@ -16,7 +36,7 @@ const newProduct = {
     thumbail,
     code,
     stock,
-    status: true
+    status: true,
 };
 
 if(Object.values(newProduct).includes(undefined)) {
@@ -42,10 +62,10 @@ const getProducts = async (limit) => {
 
     if(!limit) return products;
 
+
     return products.slice(0, limit);
 };
 
-//Filtrar un producto por el ID
 const getProductById = async (id) => {
     await getProducts();
      const product = products.find ((product) => product.id === id);
@@ -70,17 +90,10 @@ const updateProduct = async (id, dataProduct) => {
     await fs.promises.writeFile(pathFile, JSON.stringify(products));
 };
 
-//Borrar un producto
-const deleteProduct = async (id) => {
-    await getProducts();
-    products = products.filter (product => product.id !== id );
-    await fs.promises.writeFile(pathFile, JSON.stringify(products));
-};
-
 export default {
     addProduct,
     getProductById,
     getProducts,
     updateProduct,
-    deleteProduct
+    deleteProduct,
 };
